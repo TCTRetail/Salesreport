@@ -1,0 +1,18 @@
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbykN4kVMRKY8FOtlOZlgRd_7ltvkmpFpYiao0QBbnDncKqaPtB0ZSDuWWpT2SCl7K0/exec";
+
+// For reads (getStatus, getMTD) — use GET
+async function getStatus(period) {
+  const res = await fetch(`${SCRIPT_URL}?action=getStatus&period=${period}`);
+  return res.json();
+}
+
+// For writes (submitSales, resetMTD) — use POST with text/plain
+async function submitSales(store, period, sales, txn) {
+  const res = await fetch(SCRIPT_URL, {
+    method: "POST",
+    // ⚠️ Must be text/plain — not application/json — to avoid CORS preflight
+    headers: { "Content-Type": "text/plain" },
+    body: JSON.stringify({ action: "submitSales", store, period, sales, txn })
+  });
+  return res.json();
+}
